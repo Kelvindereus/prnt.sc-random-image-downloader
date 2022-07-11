@@ -116,7 +116,7 @@ while True:
                 attempt += 1
                 print("....")
                 time.sleep(2.1)
-
+####### WHEN ABOVE 900 TRY'S, RUN CODE ABOVE, BUT WITH 5 CHARACTERS
     if attempt > 900:
         
 ###LOOPING CODE BELOW 
