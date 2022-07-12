@@ -19,13 +19,13 @@ def scrape(id):
     images = []
     for img in page.findAll('img'):
         images.append(img.get('src'))
-
-    # Join the image strings
+        
+    # Create our target string from the images list
     target = ""
     for i in images:
         target += i 
     
-    # Check if "i.imgur.com" is in str1
+    # Check if "i.imgur.com" is in target
     # Download file if this is the case
     if "i.imgur.com" in target:
         start = target.index('i.imgur.com')
