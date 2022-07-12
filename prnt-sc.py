@@ -1,6 +1,3 @@
-#CODE TO FIND AND DOWNLOAD https://prnt.sc/ IMAGES
-
-#THE NEEDED MODULES.
 import requests
 from bs4 import BeautifulSoup
 import json
@@ -9,59 +6,63 @@ import time
 import string    
 import random 
 
+"""Download and scrape a page on prnt.sc
+Downloads and obtains the screenshot if found
 
-#THE CODE THAT'S GONNA LOOP
-def loop_code_img(random_numbers_result):
-#REQUESTING AND FILTERING IMAGES FROM WEBPAGE + MAKING THE URL
-    URL = "https://prnt.sc/"  + str(random_numbers_result)
-    getURL = requests.get(URL, headers={"User-Agent":"Mozilla/5.0"})
-    soup = BeautifulSoup(getURL.text, 'html.parser')
+:param id: id of the page to scrape
+"""
+def scrape(id):
+    # Download the page content
+    # Parse it with BeautifulSoup
+    res = requests.get(f'https://prnt.sc/{id}', headers={"User-Agent":"Mozilla/5.0"})
+    page = BeautifulSoup(res.text, 'html.parser')
     images = []
-    for img in soup.findAll('img'):
+    for img in page.findAll('img'):
         images.append(img.get('src'))
 
-#SPLIT URLS TO 1 STRING
-    s = images
-    str1 = ""
-    for i in s:
-        str1 += i 
-#FILTER THE SCREENSHOT, and download it
-    text = str1
+    # Join the image strings
+    target = ""
+    for i in images:
+        target += i 
     
-    if "i.imgur.com" in str1:
-        start = text.index('i.imgur.com')
-        end = text.index('.png',start)
-        substring = text[start:end]
-        new_img_url = str ("https://"+ str(substring) + str(".png")) 
+    # Check if "i.imgur.com" is in str1
+    # Download file if this is the case
+    if "i.imgur.com" in target:
+        start = target.index('i.imgur.com')
+        end = target.index('.png',start)
+        img_url = f'https://{target[start:end]}.png'
 
-#SPLIT AFTER THE / AND DOWNLOAD THAT IMAGE
-        url = new_img_url
-        filename = url.split('/')[-1]
-        r = requests.get(url, allow_redirects=True)
-        open(filename, 'wb').write(r.content)
+        # Get the filename and download it
+        file_name = img_url.split('/')[-1]
+        r = requests.get(img_url, allow_redirects=True)
+        with open(filename, 'wb') as file:
+            file.write(r.content);
         print("I found a image, and downloaded it!")
     else:
         print("....")
 
+"""Generates a random page id
+Lowercases all ids generated
 
-#RUNNING CODE ABOVE FOR X TIMES
-for _ in range(200): 
-    time.sleep(1.5) 
-    S = 4  
-    random_numbers_result = ''.join(random.choices(string.ascii_lowercase, k = S))
-    loop_code_img(random_numbers_result)
+:param length: Length of the id to generate
+"""
+def generateId(length):
+    return ''.join(random.choices(string.ascii_lowercase, k = length))
 
-for _ in range(600): 
-    time.sleep(1.5)
-    S = 5 
-    random_numbers_result = ''.join(random.choices(string.ascii_lowercase, k = S))
-    loop_code_img(random_numbers_result)
+"""Loop downloads multiple times
+After a certain amount of attempts, increases the id length to attempt
+"""
+def __name__ == '__main__':
+    for _ in range(200): 
+        time.sleep(1.5)  
+        scrape(generateId(4))
 
-    
-for _ in range(1000): 
-    time.sleep(1.5)
-    S = 6
-    random_numbers_result = ''.join(random.choices(string.ascii_lowercase, k = S))
-    loop_code_img(random_numbers_result)
+    for _ in range(600): 
+        time.sleep(1.5)
+        scrape(generateId(5))
+
+    for _ in range(1000): 
+        time.sleep(1.5)
+        scrape(generateId(6))
 
 
